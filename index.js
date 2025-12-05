@@ -1,7 +1,7 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
 const port = 3000;
 
 const app = express();
@@ -25,15 +25,25 @@ async function run() {
     await client.connect();
 
     const database = client.db('pawMartProducts');
-    const pets = database.collection('listings');
+    const pawMartProducts = database.collection('listings');
 
-    app.post('/listing', async (req, res) => {
+    //Post or save to listings to database
+    app.post('/listings', async (req, res) => {
       const data = req.body;
+      const date = new Date();
+      data.createdAt = date;
       console.log(data);
 
-      const result = await pets.insertOne(data);
+      const result = await pawMartProducts.insertOne(data);
       res.send(result);
     });
+
+
+    // Get listings from  DB
+    app.get('/listings', async(req, res)=>{
+      const result =await pawMartProducts.find().toArray();
+      res.send(result)
+    })
 
     await client.db("admin").command({ ping: 1 });
     console.log(
