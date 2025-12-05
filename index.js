@@ -1,7 +1,8 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const { ObjectId } = require("mongodb");
+require("dotenv").config();
 const port = 3000;
 
 const app = express();
@@ -24,11 +25,11 @@ async function run() {
   try {
     await client.connect();
 
-    const database = client.db('pawMartProducts');
-    const pawMartProducts = database.collection('listings');
+    const database = client.db("pawMartProducts");
+    const pawMartProducts = database.collection("listings");
 
     //Post or save to listings to database
-    app.post('/listings', async (req, res) => {
+    app.post("/listings", async (req, res) => {
       const data = req.body;
       const date = new Date();
       data.createdAt = date;
@@ -38,12 +39,20 @@ async function run() {
       res.send(result);
     });
 
-
     // Get listings from  DB
-    app.get('/listings', async(req, res)=>{
-      const result =await pawMartProducts.find().toArray();
-      res.send(result)
-    })
+    app.get("/listings", async (req, res) => {
+      const result = await pawMartProducts.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/listings/:id", async (req, res) => {
+      const { id } = req.params
+      console.log(id);
+
+      const query = {_id: new ObjectId(id) };
+      const result = await pawMartProducts.findOne(query);
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
