@@ -46,11 +46,18 @@ async function run() {
     });
 
     app.get("/listings/:id", async (req, res) => {
-      const { id } = req.params
+      const { id } = req.params;
       console.log(id);
 
-      const query = {_id: new ObjectId(id) };
+      const query = { _id: new ObjectId(id) };
       const result = await pawMartProducts.findOne(query);
+      res.send(result);
+    });
+
+    app.get("/listings/category/:category", async (req, res) => {
+      const { category } = req.params;
+      const query = { category };
+      const result = await pawMartProducts.find(query).toArray();
       res.send(result);
     });
 
@@ -70,4 +77,5 @@ app.get("/", (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server id running on ${port}`);
+  // console.log(c);
 });
