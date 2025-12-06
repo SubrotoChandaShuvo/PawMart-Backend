@@ -61,32 +61,34 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/my-products", async (req, res) => {
+      const { email } = req.query;
+      const query = { email: email };
+      const result = await pawMartProducts.find(query).toArray();
+      res.send(result);
+    });
 
-    app.get('/my-products', async(req,res)=>{
-      const {email} = req.query
-      const query = {email: email}
-      const result = await pawMartProducts.find(query).toArray()
-      res.send(result)
-
-    })
-
-    app.put('/update/:id',async(req,res)=>{
+    app.put("/update/:id", async (req, res) => {
       const data = req.body;
       const id = req.params;
       const query = { _id: new ObjectId(id) };
-console.log(data);
+      console.log(data);
 
       const updateProducts = {
-        $set: data
-      }
+        $set: data,
+      };
 
-      const result = await pawMartProducts.updateOne(
-        query, updateProducts
-      )
-      res.send(result)
+      const result = await pawMartProducts.updateOne(query, updateProducts);
+      res.send(result);
+    });
+
+    app.delete('/delete/:id', async(req,res)=>{
+      const id = req.params
+      const query = { _id: new ObjectId(id) }
+      const result = await pawMartProducts.deleteOne(query)
+      res.send(result);
     })
 
- 
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
