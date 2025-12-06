@@ -33,7 +33,7 @@ async function run() {
       const data = req.body;
       const date = new Date();
       data.createdAt = date;
-      console.log(data);
+      // console.log(data);
 
       const result = await pawMartProducts.insertOne(data);
       res.send(result);
@@ -65,9 +65,25 @@ async function run() {
     app.get('/my-products', async(req,res)=>{
       const {email} = req.query
       const query = {email: email}
-      const result = await pawMartProducts.find().toArray()
+      const result = await pawMartProducts.find(query).toArray()
       res.send(result)
 
+    })
+
+    app.put('/update/:id',async(req,res)=>{
+      const data = req.body;
+      const id = req.params;
+      const query = { _id: new ObjectId(id) };
+console.log(data);
+
+      const updateProducts = {
+        $set: data
+      }
+
+      const result = await pawMartProducts.updateOne(
+        query, updateProducts
+      )
+      res.send(result)
     })
 
  
