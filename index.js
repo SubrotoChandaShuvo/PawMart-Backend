@@ -73,7 +73,7 @@ async function run() {
       const data = req.body;
       const id = req.params;
       const query = { _id: new ObjectId(id) };
-      console.log(data);
+      // console.log(data);
 
       const updateProducts = {
         $set: data,
@@ -96,6 +96,13 @@ async function run() {
       const result = await orderCollection.insertOne(data)
       res.status(201).send(result)
     })
+
+    app.get("/recent", async (req, res) => {
+      const result = await pawMartProducts.find().sort({ _id: -1 }).limit(6).toArray();
+      console.log(result);
+      
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
