@@ -101,8 +101,16 @@ async function run() {
       const result = await pawMartProducts.find().sort({ _id: -1 }).limit(6).toArray();
       console.log(result);
       
-      res.send(result);
+      res.status(200).send(result);
     });
+
+
+    app.get('/orders', async(req,res)=>{
+      const result = await orderCollection.find().toArray();
+      res.status(201).send(result);
+    })
+
+
 
     await client.db("admin").command({ ping: 1 });
     console.log(
