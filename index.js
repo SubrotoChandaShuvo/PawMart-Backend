@@ -9,8 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const uri =
-  "mongodb+srv://petPow:BfXW4bFDEVh359kr@cluster0.hc6rogn.mongodb.net/?appName=Cluster0";
+const uri = process.env.MONGO_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -23,7 +22,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
 
     const database = client.db("pawMartProducts");
     const pawMartProducts = database.collection("listings");
@@ -48,7 +47,7 @@ async function run() {
 
     app.get("/listings/:id", async (req, res) => {
       const { id } = req.params;
-      console.log(id);
+      // console.log(id);
 
       const query = { _id: new ObjectId(id) };
       const result = await pawMartProducts.findOne(query);
@@ -92,14 +91,14 @@ async function run() {
 
     app.post('/orders', async(req, res)=>{
       const data = req.body;
-      console.log(data)
+      // console.log(data)
       const result = await orderCollection.insertOne(data)
       res.status(201).send(result)
     })
 
     app.get("/recent", async (req, res) => {
       const result = await pawMartProducts.find().sort({ _id: -1 }).limit(6).toArray();
-      console.log(result);
+      // console.log(result);
       
       res.status(200).send(result);
     });
@@ -112,7 +111,7 @@ async function run() {
 
 
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
